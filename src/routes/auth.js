@@ -1,11 +1,8 @@
-module.exports = (router) => {
-    router.get('/signIn', (req, res) => {
-        console.log('Signed In!');
-        return res.send({ Status: "Success" })
-    })
+const { signIn, signUp } = require('../controllers/v1/auth')
 
-    router.post('/signUp', (req, res) => {
-        console.log('Signed Up!');
-        return res.send({ Status: "Success" })
-    })
+module.exports = (router) => {
+    
+    router.get('/signIn', signIn)
+    router.post('/signUp', signUp)
+
 };
