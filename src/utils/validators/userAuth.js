@@ -84,5 +84,27 @@ const userSignIn = ({ user, password, isEmail }) => {
     return validUserSignIn
 }
 
+const userForgotPassword = ({ user, isEmail }) => {
 
-module.exports = { userSignUp, userSignIn, passwordSchema, validateUsername, validateEmail }
+    const userValid = isEmail ? validateEmail(user) : validateUsername(user);
+
+    const validUserForgotPassword = {
+        isValid: userValid.isValid,
+        errors: {
+            credentials: userValid.isValid
+                ? [] : ['Invalid credentials!']
+        }
+    };
+
+    return validUserForgotPassword;
+}
+
+
+module.exports = {
+    userSignUp,
+    userSignIn,
+    userForgotPassword,
+    passwordSchema,
+    validateUsername,
+    validateEmail
+};

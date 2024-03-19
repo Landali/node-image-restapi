@@ -14,5 +14,14 @@ const jwtSignIn = ({ id }) => {
     return token;
 }
 
+const jwtForgotPasswordSignIn = ({ id }) => {
+    if (!id) return null;
 
-module.exports = { jwtSignIn };
+    const token = jwt.sign({ userId: id }, JWT_TOKEN_SECRET, {
+        expiresIn: TOKEN_DURATION,
+    });
+    return token;
+}
+
+
+module.exports = { jwtSignIn, jwtForgotPasswordSignIn };

@@ -1,8 +1,8 @@
 
 const User = require('../../models/user')
-const { userSignIn, userSignUp } = require('../../utils/validators/userAuth');
+const { userSignIn, userSignUp, userForgotPassword } = require('../../utils/validators/userAuth');
 const { hashPassword, comparePasswords } = require('../../utils/encryptions/bcrypt');
-const { jwtSignIn } = require('../../utils/tokens/jwt');
+const { jwtSignIn, jwtForgotPasswordSignIn } = require('../../utils/tokens/jwt');
 
 
 module.exports = {
@@ -67,5 +67,19 @@ module.exports = {
             code: 401,
             data: {}
         })
+    },
+    async forgotPassword(req, res) {
+        console.log('Forgot password');
+        const userValid = userForgotPassword(req.body);
+        if (!userValid.isValid) return res.status(401).json({ Status: "Unsucess", error: userValid.errors });
+
+        const { user, userFound } = await User.findUser(req.body);
+        if (!user) {
+            console.log('User not found')
+            return res.status(401).json({ Status: 'Unsuccessful', error: 'No match for user.' });
+        }
+
+        const token = jwtForgotPasswordSignIn(userFound._id);
+        return res.status(200).json({ Status: 'Success', token });
     }
 }
