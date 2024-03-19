@@ -30,7 +30,7 @@ userSchema.statics = {
             });
 
             if (userFound) {
-                console.warn(`User found: ${userFound}`);
+                console.warn(`User found: ${userFound._id}`);
                 return { user: true, error: null, userFound };
             }
             return { user: false, error: null, userFound };

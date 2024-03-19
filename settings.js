@@ -15,6 +15,9 @@ try {
     PASSWORD_RESET_JWT_TOKEN_SECRET: process.env.PASSWORD_RESET_JWT_TOKEN_SECRET || 'my-token-password2',
     TOKEN_DURATION: process.env.TOKEN_DURATION || '2h',
     PASSWORD_RESET_TOKEN_DURATION: process.env.PASSWORD_RESET_TOKEN_DURATION || '10m',
+    MAILER_SERVICE: process.env.MAILER_SERVICE || 'hotmail',
+    EMAIL: process.env.EMAIL || '',
+    PASSWORD: process.env.PASSWORD || ''
   };
 } catch (error) {
   console.error('Retrieving Settings Error: ', { error });

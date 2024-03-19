@@ -3,7 +3,7 @@ const User = require('../../models/user')
 const { userSignIn, userSignUp, userForgotPassword } = require('../../utils/validators/userAuth');
 const { hashPassword, comparePasswords } = require('../../utils/encryptions/bcrypt');
 const { jwtSignIn, jwtForgotPasswordSignIn } = require('../../utils/tokens/jwt');
-
+const { sendRecoveryEmail } = require('../../services/mailer');
 
 module.exports = {
     async signIn(req, res) {
@@ -80,6 +80,11 @@ module.exports = {
         }
 
         const token = jwtForgotPasswordSignIn(userFound._id);
+
+        const url = `${req.protocol}://${req.get('host')}/resetPassword`;
+
+        const sended = await sendRecoveryEmail({ email: 'allanpaz93@hotmail.com', token, url });
+        console.log('Email sended', sended);
         return res.status(200).json({ Status: 'Success', token });
     }
 }
