@@ -2,7 +2,7 @@
 const User = require('../../models/user')
 const { userSignIn, userSignUp } = require('../../utils/validators/userAuth');
 const { hashPassword, comparePasswords } = require('../../utils/encryptions/bcrypt');
-
+const { jwtSignIn } = require('../../utils/tokens/jwt');
 
 
 module.exports = {
@@ -24,8 +24,11 @@ module.exports = {
             return res.status(401).json({ error: 'Invalid Credentials' });
         }
 
-        return res.status(200).json({ Status: 'Success' });
-
+        const token = jwtSignIn({ id: userFound._id });
+        if (!token) {
+            return res.status(401).json({ Status: 'No Auth', token: null });
+        }
+        return res.status(200).json({ Status: 'Success', token });
     },
     async signUp(req, res) {
         console.log('Signed Up!');
