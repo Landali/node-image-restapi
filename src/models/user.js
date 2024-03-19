@@ -31,12 +31,12 @@ userSchema.statics = {
 
             if (userFound) {
                 console.warn(`User found: ${userFound}`);
-                return { user: true, error: null };
+                return { user: true, error: null, userFound };
             }
-            return { user: false, error: null };
+            return { user: false, error: null, userFound };
         } catch (error) {
             console.log('Error while finding a user: ', error);
-            return { user: true, error: error.message };
+            return { user: true, error: error.message, userFound: {} };
         }
 
     },
