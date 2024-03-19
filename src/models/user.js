@@ -16,8 +16,44 @@ const userSchema = new Schema(
         timestamps: true,
         versionKey: false,
     }
-)
+);
 
-const userModel = model('user', userSchema);
+userSchema.statics = {
+    async findUser({ username, email }) {
+        try {
+            const userFound = await User.findOne({
+                $or: [{
+                    email: email
+                }, {
+                    username: username
+                }]
+            });
 
-module.exports = userModel
+            if (userFound) {
+                console.warn(`User found: ${userFound}`);
+                return { user: true, error: null };
+            }
+            return { user: false, error: null };
+        } catch (error) {
+            console.log('Error while finding a user: ', error);
+            return { user: true, error: error.message };
+        }
+
+    },
+    async createUser({ username, email, password }) {
+        try {
+            const newUser = await User.create({ username, email, password })
+            if (newUser) {
+                return { user: true, error: null };
+            }
+            return { user: false, error: null };
+        } catch (error) {
+            console.error('Error to create user: ', error);
+            return { user: false, error: error.message };
+        }
+    }
+};
+
+const User = model('user', userSchema);
+
+module.exports = User;

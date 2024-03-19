@@ -9,7 +9,8 @@ try {
   settings = {
     PORT: process.env.PORT || 3001,
     DB_URI: process.env.DB_URI || 'mongodb://',
-    DB: process.env.DB || 'mongodb'
+    DB: process.env.DB || 'mongodb',
+    PASSWORD_SALT: process.env.PASSWORD_SALT || 10
   };
 } catch (error) {
   console.error('Retrieving Settings Error: ', { error });
