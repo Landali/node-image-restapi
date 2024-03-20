@@ -107,6 +107,16 @@ module.exports = {
             return res.status(401).json({ Status: 'Unsuccess', data: {}, message });
         }
 
+        const imageExist = await Images.findUserImageByKey({ user: decoded.userId, key: details.key });
+
+        if (imageExist.error) {
+            return res.status(401).json({ Status: 'Unsuccess', data: imageExist, message: imageExist.error });
+        }
+
+        if (imageExist.image.length > 0) {
+            return res.status(401).json({ Status: 'Unsuccess', data: imageExist, message: 'Image already exist for user.' });
+        }
+
         const savedImage = Images.saveUserImage({
             user: decoded.userId, details: { ...details, url: imageurls }
         });
