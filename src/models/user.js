@@ -51,7 +51,19 @@ userSchema.statics = {
             console.error('Error to create user: ', error);
             return { user: false, error: error.message };
         }
-    }
+    },
+    async updateUserPassword({ user, password }) {
+        console.log(`Updating user:${user}`);
+        const userUpdated = await User.findOneAndUpdate({ username: user }, {
+            password: password
+        }, { upsert: false, new: true })
+
+        if (!userUpdated) {
+            console.log(`User: ${user} wasn't updated.`);
+            return false;
+        }
+        return true;
+    },
 };
 
 const User = model('user', userSchema);

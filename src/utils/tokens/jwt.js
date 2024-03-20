@@ -27,7 +27,7 @@ const jwtForgotPasswordSignIn = ({ id }) => {
 
 const jwtTokenVerify = ({ token, tokenSecret }) => {
     if (!token || !tokenSecret) return null;
-    const decode = jwt.verify(token, tokenSecret);
+    const decode = jwt.decode(token, tokenSecret);
     return decode;
 };
 

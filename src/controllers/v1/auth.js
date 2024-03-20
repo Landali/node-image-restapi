@@ -2,8 +2,9 @@
 const User = require('../../models/user')
 const { userSignIn, userSignUp, userForgotPassword } = require('../../utils/validators/userAuth');
 const { hashPassword, comparePasswords } = require('../../utils/encryptions/bcrypt');
-const { jwtSignIn, jwtForgotPasswordSignIn } = require('../../utils/tokens/jwt');
+const { jwtSignIn, jwtForgotPasswordSignIn, jwtTokenVerify } = require('../../utils/tokens/jwt');
 const { sendRecoveryEmail } = require('../../services/mailer');
+const { PASSWORD_RESET_JWT_TOKEN_SECRET } = require('../../../settings');
 
 module.exports = {
     async signIn(req, res) {
@@ -87,8 +88,14 @@ module.exports = {
         console.log('Email sended', sended);
         return res.status(200).json({ Status: 'Success', token });
     },
-    resetPassword(req, res) {
-        console.log('Reset password!');
+    async resetPassword(req, res) {
+        console.log('Reset password!', req.body);
+        const { user, password } = req.body;
+        const newPassword = await hashPassword(password);
+        const updatedUser = User.updateUserPassword({ user, password: newPassword });
+        if (!updatedUser) {
+            return res.status(401).json({ Status: 'UnSuccess' });
+        }
         return res.status(200).json({ Status: 'Success' });
     }
 }
