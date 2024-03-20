@@ -43,5 +43,16 @@ module.exports = {
             });
         }
         return res.status(200).json({ Status: 'Success', data: image, message });
+    },
+    async updateImage(req, res) {
+        console.log('Updating Image');
+        const { key, type, newKey } = req.body;
+        const imageExist = await getImageS3(`${key}.${type}`);
+        console.log('Image exist on s3? ', imageExist);
+
+        if (!imageExist) {
+            return res.status(200).json({ Status: 'Unsuccess', data: [], message: 'Image not found.' });
+        }
+        return res.send({ Status: "Success" })
     }
 }

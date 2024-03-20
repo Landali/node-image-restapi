@@ -47,19 +47,20 @@ const getImageS3 = async (name) => {
             Key: name,
             Bucket: AWS_BUCKET_NAME,
         }).promise();
-
+        console.log('Checking s3 image: ', image);
         const s3Image = image.Body.toString();
 
         return s3Image;
 
     } catch (error) {
-        console.error('Error to retrieve image from bucket: ', error.message);
-        return null;
+        console.error('Error to retrieve image from bucket: ', { status: error.code, message: error.message });
+        return false;
     }
 }
+
 
 module.exports = {
     awsS3,
     saveImageS3,
-    getImageS3
+    getImageS3,
 }
