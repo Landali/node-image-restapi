@@ -1,10 +1,13 @@
 const { searchImage } = require('../../services/unsplashApi');
 const { paramsValidator } = require('../../utils/validators/unsplashApi');
-const { awsS3, saveImageS3, getImageS3 } = require('../../services/awsS3');
+const { saveImageS3, getImageS3 } = require('../../services/awsS3');
 const { validS3Image } = require('../../utils/validators/awsS3Images');
 const { formatMeta } = require('../../utils/formatter/s3ImageMeta');
 const { jwtTokenVerify } = require('../../utils/tokens/jwt');
+const { searchImageFilters } = require('../../utils/formatter/getImages');
 const { JWT_TOKEN_SECRET } = require('../../../settings');
+
+const Images = require('../../models/image');
 
 module.exports = {
     async getImages(req, res) {
@@ -21,7 +24,7 @@ module.exports = {
         // TODO: Save config for modular config.
         const token = req.header('Authorization');
         const decoded = jwtTokenVerify({ token, tokenSecret: JWT_TOKEN_SECRET });
-        
+
         const validatingImage = {
             key: `${decoded.userId}/${key}`,
             name,
@@ -67,5 +70,21 @@ module.exports = {
         const savedImage = await saveImageS3(`${decoded.userId}/${key}`, image, meta);
 
         return res.send({ Status: "Success" })
+    },
+    async getUserImages(req, res) {
+
+        console.log('Retrieving user saved images ...');
+        const { page, perPage } = req.body;
+        const token = req.header('Authorization');
+        const decoded = jwtTokenVerify({ token, tokenSecret: JWT_TOKEN_SECRET });
+        const { newPage, newPerPage } = searchImageFilters({ page, perPage });
+
+        const { images, error } = await Images.findUserImages({
+            user: decoded.userId,
+            page: newPage,
+            perPage: newPerPage
+        });
+
+        return res.send({ Status: "Success", data: images, error })
     }
 }
