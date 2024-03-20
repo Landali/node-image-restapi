@@ -6,6 +6,8 @@ const { formatMeta } = require('../../utils/formatter/s3ImageMeta');
 const { jwtTokenVerify } = require('../../utils/tokens/jwt');
 const { searchImageFilters } = require('../../utils/formatter/getImages');
 const { JWT_TOKEN_SECRET } = require('../../../settings');
+const { validateUserImage } = require('../../utils/validators/saveImage');
+const { formatUserImageUrls } = require('../../utils/formatter/userImageUrls');
 
 const Images = require('../../models/image');
 
@@ -86,5 +88,33 @@ module.exports = {
         });
 
         return res.send({ Status: "Success", data: images, error })
+    },
+    async saveUserImage(req, res) {
+        console.log('Saving user image ...');
+        const { details } = req.body;
+        const token = req.header('Authorization');
+        const decoded = jwtTokenVerify({ token, tokenSecret: JWT_TOKEN_SECRET });
+
+        const { url } = details;
+        const imageurls = formatUserImageUrls(url);
+
+        const { valid, message } = validateUserImage({
+            user: decoded.userId,
+            details: { ...details, url: imageurls },
+            validTypes: ['jpg', 'png']
+        });
+        if (!valid) {
+            return res.status(401).json({ Status: 'Unsuccess', data: {}, message });
+        }
+
+        const savedImage = Images.saveUserImage({
+            user: decoded.userId, details: { ...details, url: imageurls }
+        });
+
+        if (savedImage.error) {
+            return res.status(401).json({ Status: 'Unsuccess', data: {}, message: savedImage.error });
+        }
+
+        return res.status(401).json({ Status: 'Success', data: savedImage.image, message: 'Image Saved!' });
     }
 }

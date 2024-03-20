@@ -72,6 +72,19 @@ imageSchema.statics = {
             return { images: [], error: error.message };
         }
     },
+    async saveUserImage({ user, details }) {
+        try {
+            const newImage = Image.create({ user, details });
+            if (newImage) {
+                return { image: newImage, error: null };
+            }
+            return { image: {}, error: 'Image was not saved!' };
+        } catch (error) {
+            console.error('Error saving user image: ', error.message);
+            return { image: {}, error: error.message };
+        }
+
+    }
 };
 
 
