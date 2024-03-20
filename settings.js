@@ -17,7 +17,9 @@ try {
     PASSWORD_RESET_TOKEN_DURATION: process.env.PASSWORD_RESET_TOKEN_DURATION || '10m',
     MAILER_SERVICE: process.env.MAILER_SERVICE || 'hotmail',
     EMAIL: process.env.EMAIL || '',
-    PASSWORD: process.env.PASSWORD || ''
+    PASSWORD: process.env.PASSWORD || '',
+    UNSPLASH_API_URL: process.env.UNSPLASH_API_URL || 'https://api.unsplash.com',
+    UNSPLASH_API_ACCESS_KEY: process.env.UNSPLASH_API_ACCESS_KEY || '',
   };
 } catch (error) {
   console.error('Retrieving Settings Error: ', { error });
