@@ -86,5 +86,9 @@ module.exports = {
         const sended = await sendRecoveryEmail({ email: 'allanpaz93@hotmail.com', token, url });
         console.log('Email sended', sended);
         return res.status(200).json({ Status: 'Success', token });
+    },
+    resetPassword(req, res) {
+        console.log('Reset password!');
+        return res.status(200).json({ Status: 'Success' });
     }
 }
