@@ -1,11 +1,10 @@
+const { signIn, signUp, forgotPassword, resetPassword } = require('../controllers/v1/auth');
+const { resetPasswordverifyToken } = require('../middlewares/jwtAuth');
 module.exports = (router) => {
-    router.get('/signIn', (req, res) => {
-        console.log('Signed In!');
-        return res.send({ Status: "Success" })
-    })
 
-    router.post('/signUp', (req, res) => {
-        console.log('Signed Up!');
-        return res.send({ Status: "Success" })
-    })
+    router.get('/signIn', signIn);
+    router.post('/signUp', signUp);
+    router.get('/forgotPassword', forgotPassword);
+    router.put('/resetPassword', resetPasswordverifyToken, resetPassword);
+    
 };
