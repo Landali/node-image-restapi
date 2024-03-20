@@ -3,6 +3,9 @@ const { paramsValidator } = require('../../utils/validators/unsplashApi');
 const { awsS3, saveImageS3, getImageS3 } = require('../../services/awsS3');
 const { validS3Image } = require('../../utils/validators/awsS3Images');
 const { formatMeta } = require('../../utils/formatter/s3ImageMeta');
+const { jwtTokenVerify } = require('../../utils/tokens/jwt');
+const { JWT_TOKEN_SECRET } = require('../../../settings');
+
 module.exports = {
     async getImages(req, res) {
         console.log('Get images');
@@ -15,9 +18,12 @@ module.exports = {
     async saveImage(req, res) {
         console.log('Save Image');
         const { key, image, type, name } = req.body
-        // TODO: Save config for modular config. Retrieve dynamic userId.
+        // TODO: Save config for modular config.
+        const token = req.header('Authorization');
+        const decoded = jwtTokenVerify({ token, tokenSecret: JWT_TOKEN_SECRET });
+        
         const validatingImage = {
-            key: `65fa0dc9aecd50d61d0f2c20/${key}`,
+            key: `${decoded.userId}/${key}`,
             name,
             image,
             type,
@@ -34,7 +40,7 @@ module.exports = {
         if (!valid) {
             return res.status(401).json({ Status: 'Unsuccess', data: null, message });
         }
-        const savedImage = await saveImageS3(`<REPLACE_DYNAMIC_USER_ID>/${key}`, image, { name, type, key });
+        const savedImage = await saveImageS3(`${decoded.userId}/${key}`, image, { name, type, key });
         console.log('Image was saved? ', savedImage)
         if (!savedImage) {
             return res.status(401).json({
@@ -46,16 +52,19 @@ module.exports = {
         return res.status(200).json({ Status: 'Success', data: image, message });
     },
     async updateImage(req, res) {
+
         console.log('Updating Image');
         const { key, type, name } = req.body;
-        const { hasImage, image, metadata } = await getImageS3(`<REPLACE_DYNAMIC_USER_ID>/${key}`);
+        const token = req.header('Authorization');
+        const decoded = jwtTokenVerify({ token, tokenSecret: JWT_TOKEN_SECRET });
+        const { hasImage, image, metadata } = await getImageS3(`${decoded.userId}/${key}`);
         console.log('Image exist on s3? ', hasImage);
         if (!hasImage) {
             return res.status(200).json({ Status: 'Unsuccess', data: [], message: 'Image not found.' });
         }
 
         const meta = formatMeta({ key, name, type, metadata });
-        const savedImage = await saveImageS3(`<REPLACE_DYNAMIC_USER_ID>/${key}`, image, meta);
+        const savedImage = await saveImageS3(`${decoded.userId}/${key}`, image, meta);
 
         return res.send({ Status: "Success" })
     }
