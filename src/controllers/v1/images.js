@@ -2,7 +2,7 @@ const { searchImage } = require('../../services/unsplashApi');
 const { paramsValidator } = require('../../utils/validators/unsplashApi');
 const { awsS3, saveImageS3, getImageS3 } = require('../../services/awsS3');
 const { validS3Image } = require('../../utils/validators/awsS3Images');
-
+const { formatMeta } = require('../../utils/formatter/s3ImageMeta');
 module.exports = {
     async getImages(req, res) {
         console.log('Get images');
@@ -47,12 +47,16 @@ module.exports = {
     },
     async updateImage(req, res) {
         console.log('Updating Image');
-        const { key, type, newKey } = req.body;
-        const imageExist = await getImageS3(`<REPLACE_DYNAMIC_USER_ID>/${key}`);
-        console.log('Image exist on s3? ', imageExist);
-        if (!imageExist) {
+        const { key, type, name } = req.body;
+        const { hasImage, image, metadata } = await getImageS3(`<REPLACE_DYNAMIC_USER_ID>/${key}`);
+        console.log('Image exist on s3? ', hasImage);
+        if (!hasImage) {
             return res.status(200).json({ Status: 'Unsuccess', data: [], message: 'Image not found.' });
         }
+
+        const meta = formatMeta({ key, name, type, metadata });
+        const savedImage = await saveImageS3(`<REPLACE_DYNAMIC_USER_ID>/${key}`, image, meta);
+
         return res.send({ Status: "Success" })
     }
 }

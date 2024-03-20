@@ -53,13 +53,11 @@ const getImageS3 = async (name) => {
             Bucket: AWS_BUCKET_NAME,
         }).promise();
         console.log('Checking s3 image: ', image);
-        const s3Image = image.Body.toString();
-
-        return s3Image;
+        return { image: image.Body.toString(), metadata: image.Metadata, hasImage: true };
 
     } catch (error) {
         console.error('Error to retrieve image from bucket: ', { status: error.code, message: error.message });
-        return false;
+        return { image: '', metadata: {}, hasImage: false };
     }
 }
 
