@@ -27,10 +27,15 @@ const awsS3 = async () => {
     }
 }
 
-const saveImageS3 = async (name, image) => {
+const saveImageS3 = async (name, image, metadata) => {
     try {
         const s3 = await s3connect();
-        const saved = await s3.putObject({ Bucket: AWS_BUCKET_NAME, Key: name, Body: image }).promise();
+        const saved = await s3.putObject({
+            Bucket: AWS_BUCKET_NAME,
+            Key: name,
+            Body: image,
+            Metadata: metadata
+        }).promise();
         console.log('Saved image: ', saved);
         return true;
     } catch (error) {

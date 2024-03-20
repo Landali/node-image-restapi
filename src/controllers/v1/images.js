@@ -14,10 +14,11 @@ module.exports = {
     },
     async saveImage(req, res) {
         console.log('Save Image');
-        const { key, image, type } = req.body
-        // TODO: Save config for modular config.
+        const { key, image, type, name } = req.body
+        // TODO: Save config for modular config. Retrieve dynamic userId.
         const validatingImage = {
-            key,
+            key: `65fa0dc9aecd50d61d0f2c20/${key}`,
+            name,
             image,
             type,
             config: {
@@ -33,7 +34,7 @@ module.exports = {
         if (!valid) {
             return res.status(401).json({ Status: 'Unsuccess', data: null, message });
         }
-        const savedImage = await saveImageS3(`${key}.${type}`, image);
+        const savedImage = await saveImageS3(`<REPLACE_DYNAMIC_USER_ID>/${key}`, image, { name, type, key });
         console.log('Image was saved? ', savedImage)
         if (!savedImage) {
             return res.status(401).json({
@@ -47,9 +48,8 @@ module.exports = {
     async updateImage(req, res) {
         console.log('Updating Image');
         const { key, type, newKey } = req.body;
-        const imageExist = await getImageS3(`${key}.${type}`);
+        const imageExist = await getImageS3(`<REPLACE_DYNAMIC_USER_ID>/${key}`);
         console.log('Image exist on s3? ', imageExist);
-
         if (!imageExist) {
             return res.status(200).json({ Status: 'Unsuccess', data: [], message: 'Image not found.' });
         }

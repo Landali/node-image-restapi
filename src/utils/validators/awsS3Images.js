@@ -29,16 +29,18 @@ const validImageType = (type, validTypes) => {
     return isValid;
 };
 
-const validS3Image = ({ key, image, type, config }) => {
+const validS3Image = ({ key, image, name, type, config }) => {
     const imageValid = validImage(image, config.regex);
     const keyValid = validImageKey(key);
+    const nameValid = validImageKey(name);
     const validType = validImageType(type, config.validImageTypes);
     const s3ImageValid = {
-        valid: imageValid.valid && keyValid.valid && validType.valid,
+        valid: imageValid.valid && keyValid.valid && validType.valid && nameValid.valid,
         message: {
             image: imageValid.message,
             key: keyValid.message,
-            type: validType.message
+            type: validType.message,
+            name: nameValid.message
         }
     }
     return s3ImageValid;
