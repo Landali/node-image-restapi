@@ -95,6 +95,23 @@ imageSchema.statics = {
             return { images: [], error: error.message };
         }
     },
+    async updateUserImage({ user, details }) {
+        try {
+            console.log('Updating user image');
+            const imageUpdated = await Image.findOneAndUpdate({ user }, {
+                details
+            }, { upsert: false, new: true })
+
+            if (!imageUpdated) {
+                console.log(`Image for user wasn't updated.`);
+                return { image: {}, error: 'Image was not updated!' };
+            }
+            return { image: imageUpdated, error: null };
+        } catch (error) {
+            console.error('Error updating user image: ', error.message);
+            return { image: {}, error: error.message };
+        }
+    },
 };
 
 

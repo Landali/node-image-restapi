@@ -125,6 +125,44 @@ module.exports = {
             return res.status(401).json({ Status: 'Unsuccess', data: {}, message: savedImage.error });
         }
 
-        return res.status(401).json({ Status: 'Success', data: savedImage.image, message: 'Image Saved!' });
+        return res.status(200).json({ Status: 'Success', data: savedImage.image, message: 'Image Saved!' });
+    },
+    async updateUserImage(req, res) {
+        console.log('Updating user image ...');
+
+        const { details } = req.body;
+        const token = req.header('Authorization');
+        const decoded = jwtTokenVerify({ token, tokenSecret: JWT_TOKEN_SECRET });
+
+        const { url } = details;
+        const imageurls = formatUserImageUrls(url);
+
+        const { valid, message } = validateUserImage({
+            user: decoded.userId,
+            details: { ...details, url: imageurls },
+            validTypes: ['jpg', 'png']
+        });
+        if (!valid) {
+            return res.status(401).json({ Status: 'Unsuccess', data: {}, message });
+        }
+
+        const imageExist = await Images.findUserImageByKey({ user: decoded.userId, key: details.key });
+
+        if (imageExist.error) {
+            return res.status(401).json({ Status: 'Unsuccess', data: imageExist, message: imageExist.error });
+        }
+
+        if (imageExist.image.length === 0) {
+            return res.status(401).json({ Status: 'Unsuccess', data: imageExist, message: 'Image does not exist for user.' });
+        }
+
+        const updatedImage = Images.updateUserImage({
+            user: decoded.userId, details: { ...details, url: imageurls }
+        });
+
+        if (updatedImage.error) {
+            return res.status(401).json({ Status: 'Unsuccess', data: {}, message: savedImage.error });
+        }
+        return res.status(200).json({ Status: 'Success', data: updatedImage.image, message: 'Image updated!' });
     }
 }
