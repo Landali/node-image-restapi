@@ -20,6 +20,9 @@ try {
     PASSWORD: process.env.PASSWORD || '',
     UNSPLASH_API_URL: process.env.UNSPLASH_API_URL || 'https://api.unsplash.com',
     UNSPLASH_API_ACCESS_KEY: process.env.UNSPLASH_API_ACCESS_KEY || '',
+    AWS_ACCESS_KEY: process.env.AWS_ACCESS_KEY || '',
+    AWS_SECRET_KEY: process.env.AWS_SECRET_KEY || '',
+    AWS_BUCKET_NAME: process.env.AWS_BUCKET_NAME || ''
   };
 } catch (error) {
   console.error('Retrieving Settings Error: ', { error });
