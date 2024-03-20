@@ -4,7 +4,6 @@ const { userSignIn, userSignUp, userForgotPassword } = require('../../utils/vali
 const { hashPassword, comparePasswords } = require('../../utils/encryptions/bcrypt');
 const { jwtSignIn, jwtForgotPasswordSignIn, jwtTokenVerify } = require('../../utils/tokens/jwt');
 const { sendRecoveryEmail } = require('../../services/mailer');
-const { PASSWORD_RESET_JWT_TOKEN_SECRET } = require('../../../settings');
 
 module.exports = {
     async signIn(req, res) {

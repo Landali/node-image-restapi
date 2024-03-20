@@ -1,7 +1,7 @@
 const { jwtVerification } = require('../middlewares/jwtAuth');
-const { getImages, saveImage } = require('../controllers/v1/images');
+const { getImages, saveS3Image, updateS3Image } = require('../controllers/v1/images');
 module.exports = (router) => {
     router.get('/getImages', jwtVerification, getImages)
-
-    router.post('/saveImage', jwtVerification, saveImage)
+    router.post('/saveS3Image', jwtVerification, saveS3Image);
+    router.put('/updateS3Image', jwtVerification, updateS3Image);
 };
