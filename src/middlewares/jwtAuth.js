@@ -26,7 +26,6 @@ const resetPasswordverifyToken = (req, res, next) => {
     if (!token) return res.status(401).json({ error: 'Access denied' });
     try {
 
-        console.log();
         const decoded = jwtTokenVerify({
             token,
             tokenSecret: PASSWORD_RESET_JWT_TOKEN_SECRET
