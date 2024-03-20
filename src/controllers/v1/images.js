@@ -15,7 +15,7 @@ module.exports = {
 
         return res.send({ Status: "Success", data: { ...images.data } })
     },
-    async saveImage(req, res) {
+    async saveS3Image(req, res) {
         console.log('Save Image');
         const { key, image, type, name } = req.body
         // TODO: Save config for modular config.
@@ -51,7 +51,7 @@ module.exports = {
         }
         return res.status(200).json({ Status: 'Success', data: image, message });
     },
-    async updateImage(req, res) {
+    async updateS3Image(req, res) {
 
         console.log('Updating Image');
         const { key, type, name } = req.body;
