@@ -48,15 +48,14 @@ module.exports = {
             user: newUser,
         } = await User.createUser({ ...req.body, password: newPassword });
 
-        if (!newUser) {
-            return res.status(404).json({
-                message: 'Sign Up Unsuccessful',
+        if (newUser) {
+            return res.status(200).json({
+                message: 'Sign Up Successful',
                 data: {}
             })
         }
-
-        return res.status(200).json({
-            message: 'Sign Up Successful',
+        return res.status(404).json({
+            message: 'Sign Up Unsuccessful',
             data: {}
         })
 

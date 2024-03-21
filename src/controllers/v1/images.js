@@ -87,7 +87,7 @@ module.exports = {
             perPage: newPerPage
         });
 
-        res.status(200).json({ Status: "Success", data: images, error });
+       return res.status(200).json({ Status: "Success", data: images, error });
     },
     async saveUserImage(req, res) {
         console.log('Saving user image ...');
