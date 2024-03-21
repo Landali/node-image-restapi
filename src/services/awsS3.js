@@ -36,7 +36,7 @@ const saveImageS3 = async (name, image, metadata) => {
             Body: image,
             Metadata: metadata
         }).promise();
-        console.log('Saved image: ', saved);
+     
         return true;
     } catch (error) {
         console.error('Error to save image in s3: ', error.message);
@@ -52,7 +52,7 @@ const getImageS3 = async (name) => {
             Key: name,
             Bucket: AWS_BUCKET_NAME,
         }).promise();
-        console.log('Checking s3 image: ', image);
+       
         return { image: image.Body.toString(), metadata: image.Metadata, hasImage: true };
 
     } catch (error) {

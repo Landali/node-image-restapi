@@ -27,14 +27,13 @@ const passwordSchema = () => {
 const validatePassword = (password) => {
     const schema = passwordSchema();
     const isValid = schema.validate(password, { details: true });
-    console.log('Is password valid?', isValid);
+
     return { isValid: isValid.length === 0, error: isValid }
 }
 
 const validateEmail = (email) => {
     const isValid = emailValidator.validate(email);
-    console.log('Email valid?', isValid);
-
+   
     return { isValid, error: !isValid ? ['Invalid email format.'] : [] };
 }
 

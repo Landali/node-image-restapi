@@ -34,10 +34,9 @@ const jwtTokenVerify = ({ token, tokenSecret }) => {
 const verifyValidToken = (request, response, next, token) => {
     jwt.verify(token, JWT_TOKEN_SECRET, (err, decoded) => {
         if (err) {
-            console.log('jwt error: ', {
+            console.error('jwt error: ', {
                 name: err.name,
                 message: err.message,
-
             })
             if (err.name === 'TokenExpiredError') {
                 return response.status(401).json({
@@ -63,7 +62,7 @@ const verifyValidToken = (request, response, next, token) => {
 const verifyValidResetPassword = (request, response, next, token) => {
     jwt.verify(token, PASSWORD_RESET_JWT_TOKEN_SECRET, (err, decoded) => {
         if (err) {
-            console.log('jwt error: ', {
+            console.error('jwt error: ', {
                 name: err.name,
                 message: err.message,
 

@@ -42,13 +42,7 @@ module.exports = {
         if (error) return res.status(404).json({ Status: "Error.", error });
         if (user) return res.status(404).json({ Status: "User already exist." });
 
-
-        console.log('User exist? ', user);
-
-
         const newPassword = await hashPassword(req.body.password);
-        console.log('Hashed password: ', req.body.password, newPassword);
-
 
         const {
             user: newUser,
@@ -74,10 +68,8 @@ module.exports = {
 
         const { user, userFound } = await User.signUser(req.body);
         if (!user) {
-            console.log('User not found')
             return res.status(404).json({ Status: 'Unsuccessful', error: 'No match for user.' });
         }
-        console.log('userFound', userFound)
         const token = jwtForgotPasswordSignIn(userFound._id);
 
         const url = `${req.protocol}://${req.get('host')}/resetPassword`;
@@ -86,7 +78,7 @@ module.exports = {
         return res.status(200).json({ Status: 'Success', token });
     },
     async resetPassword(req, res) {
-        console.log('Reset password!', req.body);
+        console.log('Reset password!');
         const { user, password } = req.body;
         const newPassword = await hashPassword(password);
         const updatedUser = User.updateUserPassword({ user, password: newPassword });
