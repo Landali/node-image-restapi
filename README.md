@@ -200,3 +200,30 @@ The rest api instructions is described below.
             "results": []
         }
 
+
+## Get User Images
+
+`GET /getUserImages`
+
+        http://localhost:3001/getUserImages
+
+### Headers
+
+`Authorization`: JWT_TOKEN_SENDED_TO_EMAIL_URL
+
+### Response if Success
+        "Status": "Success",
+        "data": [Contains objects with the user saved image details],
+        "error": null
+        {}
+
+`Payload:`
+        {
+        "page": 0,
+        "perPage": 5"
+        }
+
+### Response if Fails
+        "Status": "Success",
+        "data": [],
+        "error": ERRORS_DETECTED
