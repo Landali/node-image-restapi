@@ -401,3 +401,39 @@ The rest api instructions is described below.
             "message": "Image not found."
         }
 
+
+## Download S3 Image
+
+`For the payload information select the corresponding param from the data used on save user image api.`
+
+
+`PUT /downloadS3Image`
+
+        http://localhost:3001/downloadS3Image
+
+### Headers
+
+`Authorization`: JWT_TOKEN_SENDED_TO_EMAIL_URL
+
+### Response if Success
+        "Status": "Success",
+        "error": null
+        
+        {}
+
+`Payload:`
+        {
+            "key": "DqVU8c9woUg",
+            "type": "jpg"
+        }
+
+### Response if Fails
+        {
+                "Status": "Unsuccess",
+                "error": {
+                        "key": "",
+                        "type": "Image type not valid."
+                }       
+        }
+
+
