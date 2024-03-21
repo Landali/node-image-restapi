@@ -5,10 +5,11 @@ const { validS3Image } = require('../../utils/validators/awsS3Images');
 const { formatMeta } = require('../../utils/formatter/s3ImageMeta');
 const { jwtTokenVerify } = require('../../utils/tokens/jwt');
 const { searchImageFilters } = require('../../utils/formatter/getImages');
-const { JWT_TOKEN_SECRET } = require('../../../settings');
+const { JWT_TOKEN_SECRET, DOWNLOAD_IMAGE_PATH } = require('../../../settings');
 const { validateUserImage } = require('../../utils/validators/saveImage');
+const { validDownloadS3Image } = require('../../utils/validators/downloadS3Image');
 const { formatUserImageUrls } = require('../../utils/formatter/userImageUrls');
-
+const imageDownloader = require('node-image-downloader');
 const Images = require('../../models/image');
 
 module.exports = {
@@ -164,5 +165,43 @@ module.exports = {
             return res.status(401).json({ Status: 'Unsuccess', data: {}, message: savedImage.error });
         }
         return res.status(200).json({ Status: 'Success', data: updatedImage.image, message: 'Image updated!' });
+    },
+    async downloadS3Image(req, res) {
+        console.log('Downloading user image ...');
+        const { key, type } = req.body;
+
+        const token = req.header('Authorization');
+        const decoded = jwtTokenVerify({ token, tokenSecret: JWT_TOKEN_SECRET });
+        const config = {
+            validImageTypes: ['jpg', 'png']
+        };
+        const { valid, message } = validDownloadS3Image({ key, type, config });
+
+        if (!valid) {
+            return res.status(401).json({ Status: 'Unsuccess', error: message });
+        }
+
+        const { hasImage, image, metadata } = await getImageS3(`${decoded.userId}/${key}`);
+        if (!hasImage) {
+            return res.status(401).json({ Status: 'Unsuccess', error: 'Image not found!' });
+        }
+
+        imageDownloader({
+            imgs: [
+                {
+                    uri: `${image}.${type}`,
+                    filename: `${metadata.name}-${Math.random()}`,
+                }
+            ],
+            dest: DOWNLOAD_IMAGE_PATH, //destination folder
+        })
+            .then((info) => {
+                console.log('Downloading image successful', info);
+                return res.status(200).json({ Status: 'Success', error: null });
+            })
+            .catch((error, response, body) => {
+                console.log('Something when wrong while downloading image: ', error.message);
+                return res.status(401).json({ Status: 'Unsuccess', error: error.message });
+            })
     }
 }

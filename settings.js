@@ -22,7 +22,8 @@ try {
     UNSPLASH_API_ACCESS_KEY: process.env.UNSPLASH_API_ACCESS_KEY || '',
     AWS_ACCESS_KEY: process.env.AWS_ACCESS_KEY || '',
     AWS_SECRET_KEY: process.env.AWS_SECRET_KEY || '',
-    AWS_BUCKET_NAME: process.env.AWS_BUCKET_NAME || ''
+    AWS_BUCKET_NAME: process.env.AWS_BUCKET_NAME || '',
+    DOWNLOAD_IMAGE_PATH: process.env.HOME + process.env.DOWNLOAD_PATH || null
   };
 } catch (error) {
   console.error('Retrieving Settings Error: ', { error });
