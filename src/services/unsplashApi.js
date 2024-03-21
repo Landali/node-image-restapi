@@ -17,7 +17,7 @@ const buildUnsplashQuery = ({
 }
 
 const searchImage = async ({ page, perPage, orderBy, query }) => {
-    console.log('Searching image for:', query);
+    console.log('Searching image ');
     const request = buildUnsplashQuery({ page, perPage, orderBy, query, search: '/search/photos' })
     const response = await unsplashClient.get(request);
     return { Status: "Success", data: response.data, resultNumber: response.data.results.length };

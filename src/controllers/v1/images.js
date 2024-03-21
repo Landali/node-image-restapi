@@ -14,17 +14,16 @@ const Images = require('../../models/image');
 
 module.exports = {
     async getImages(req, res) {
-        console.log('Get images');
+        console.log('Retrieving images from provider ...');
 
         const params = paramsValidator(req.body);
         const images = await searchImage(params);
-
-        return res.send({ Status: "Success", data: { ...images.data } })
+        return res.status(200).json({ Status: "Success", data: { ...images.data } });
     },
     async saveS3Image(req, res) {
-        console.log('Save Image');
+        console.log('Saving image to bucket ... ');
         const { key, image, type, name } = req.body
-        // TODO: Save config for modular config.
+
         const token = req.header('Authorization');
         const decoded = jwtTokenVerify({ token, tokenSecret: JWT_TOKEN_SECRET });
 
@@ -44,10 +43,10 @@ module.exports = {
         }
         const { valid, message } = validS3Image(validatingImage);
         if (!valid) {
-            return res.status(401).json({ Status: 'Unsuccess', data: null, message });
+            return res.status(400).json({ Status: 'Unsuccess', data: null, message });
         }
         const savedImage = await saveImageS3(`${decoded.userId}/${key}`, image, { name, type, key });
-        console.log('Image was saved? ', savedImage)
+       
         if (!savedImage) {
             return res.status(401).json({
                 Status: 'Unsuccess',
@@ -59,24 +58,24 @@ module.exports = {
     },
     async updateS3Image(req, res) {
 
-        console.log('Updating Image');
+        console.log('Updating image on bucket ... ');
         const { key, type, name } = req.body;
         const token = req.header('Authorization');
         const decoded = jwtTokenVerify({ token, tokenSecret: JWT_TOKEN_SECRET });
         const { hasImage, image, metadata } = await getImageS3(`${decoded.userId}/${key}`);
-        console.log('Image exist on s3? ', hasImage);
+
         if (!hasImage) {
-            return res.status(200).json({ Status: 'Unsuccess', data: [], message: 'Image not found.' });
+            return res.status(404).json({ Status: 'Unsuccess', data: [], message: 'Image not found.' });
         }
 
         const meta = formatMeta({ key, name, type, metadata });
         const savedImage = await saveImageS3(`${decoded.userId}/${key}`, image, meta);
 
-        return res.send({ Status: "Success" })
+        return res.status(200).json({ Status: "Success", message, data: savedImage });
     },
     async getUserImages(req, res) {
-
         console.log('Retrieving user saved images ...');
+
         const { page, perPage } = req.body;
         const token = req.header('Authorization');
         const decoded = jwtTokenVerify({ token, tokenSecret: JWT_TOKEN_SECRET });
@@ -88,7 +87,7 @@ module.exports = {
             perPage: newPerPage
         });
 
-        return res.send({ Status: "Success", data: images, error })
+       return res.status(200).json({ Status: "Success", data: images, error });
     },
     async saveUserImage(req, res) {
         console.log('Saving user image ...');
@@ -105,17 +104,17 @@ module.exports = {
             validTypes: ['jpg', 'png']
         });
         if (!valid) {
-            return res.status(401).json({ Status: 'Unsuccess', data: {}, message });
+            return res.status(400).json({ Status: 'Unsuccess', data: {}, message });
         }
 
         const imageExist = await Images.findUserImageByKey({ user: decoded.userId, key: details.key });
 
         if (imageExist.error) {
-            return res.status(401).json({ Status: 'Unsuccess', data: imageExist, message: imageExist.error });
+            return res.status(404).json({ Status: 'Unsuccess', data: imageExist, message: imageExist.error });
         }
 
         if (imageExist.image.length > 0) {
-            return res.status(401).json({ Status: 'Unsuccess', data: imageExist, message: 'Image already exist for user.' });
+            return res.status(404).json({ Status: 'Unsuccess', data: imageExist, message: 'Image already exist for user.' });
         }
 
         const savedImage = Images.saveUserImage({
@@ -123,7 +122,7 @@ module.exports = {
         });
 
         if (savedImage.error) {
-            return res.status(401).json({ Status: 'Unsuccess', data: {}, message: savedImage.error });
+            return res.status(400).json({ Status: 'Unsuccess', data: {}, message: savedImage.error });
         }
 
         return res.status(200).json({ Status: 'Success', data: savedImage.image, message: 'Image Saved!' });
@@ -144,17 +143,17 @@ module.exports = {
             validTypes: ['jpg', 'png']
         });
         if (!valid) {
-            return res.status(401).json({ Status: 'Unsuccess', data: {}, message });
+            return res.status(400).json({ Status: 'Unsuccess', data: {}, message });
         }
 
         const imageExist = await Images.findUserImageByKey({ user: decoded.userId, key: details.key });
 
         if (imageExist.error) {
-            return res.status(401).json({ Status: 'Unsuccess', data: imageExist, message: imageExist.error });
+            return res.status(404).json({ Status: 'Unsuccess', data: imageExist, message: imageExist.error });
         }
 
         if (imageExist.image.length === 0) {
-            return res.status(401).json({ Status: 'Unsuccess', data: imageExist, message: 'Image does not exist for user.' });
+            return res.status(404).json({ Status: 'Unsuccess', data: imageExist, message: 'Image does not exist for user.' });
         }
 
         const updatedImage = Images.updateUserImage({
@@ -162,7 +161,7 @@ module.exports = {
         });
 
         if (updatedImage.error) {
-            return res.status(401).json({ Status: 'Unsuccess', data: {}, message: savedImage.error });
+            return res.status(400).json({ Status: 'Unsuccess', data: {}, message: savedImage.error });
         }
         return res.status(200).json({ Status: 'Success', data: updatedImage.image, message: 'Image updated!' });
     },
@@ -178,12 +177,12 @@ module.exports = {
         const { valid, message } = validDownloadS3Image({ key, type, config });
 
         if (!valid) {
-            return res.status(401).json({ Status: 'Unsuccess', error: message });
+            return res.status(400).json({ Status: 'Unsuccess', error: message });
         }
 
         const { hasImage, image, metadata } = await getImageS3(`${decoded.userId}/${key}`);
         if (!hasImage) {
-            return res.status(401).json({ Status: 'Unsuccess', error: 'Image not found!' });
+            return res.status(404).json({ Status: 'Unsuccess', error: 'Image not found!' });
         }
 
         imageDownloader({
@@ -200,7 +199,7 @@ module.exports = {
                 return res.status(200).json({ Status: 'Success', error: null });
             })
             .catch((error, response, body) => {
-                console.log('Something when wrong while downloading image: ', error.message);
+                console.error('Something when wrong while downloading image: ', error.message);
                 return res.status(401).json({ Status: 'Unsuccess', error: error.message });
             })
     }

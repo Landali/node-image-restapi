@@ -35,7 +35,7 @@ userSchema.statics = {
             }
             return { user: false, error: null, userFound };
         } catch (error) {
-            console.log('Error while finding a user: ', error);
+            console.error('Error while finding a user: ', error);
             return { user: true, error: error.message, userFound: {} };
         }
 
@@ -51,7 +51,7 @@ userSchema.statics = {
             }
             return { user: false, error: null, userFound };
         } catch (error) {
-            console.log('Error while finding a user: ', error);
+            console.error('Error while finding a user: ', error);
             return { user: true, error: error.message, userFound: {} };
         }
 
@@ -75,7 +75,7 @@ userSchema.statics = {
         }, { upsert: false, new: true })
 
         if (!userUpdated) {
-            console.log(`User: ${user} wasn't updated.`);
+            console.warn(`User: ${user} wasn't updated.`);
             return false;
         }
         return true;

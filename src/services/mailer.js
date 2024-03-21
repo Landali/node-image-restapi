@@ -26,7 +26,7 @@ const emailSettings = ({ subject, email, token, url }) => {
 const send = (transporter, mailOptions) => {
     transporter.sendMail(mailOptions, (error, info) => {
         if (error) {
-            console.log('Error sending recovery email: ', error);
+            console.error('Error sending recovery email: ', error);
         } else {
             console.log('Email sended!');
         }
@@ -45,7 +45,7 @@ const sendRecoveryEmail = async ({ email, token, url }) => {
         const sended = await send(transport, mailOptions);
         return true;
     } catch (error) {
-        console.log('Error sending email: ', error.message);
+        console.error('Error sending email: ', error.message);
         return false;
     }
 };

@@ -68,7 +68,7 @@ imageSchema.statics = {
 
             return { images, error: null };
         } catch (error) {
-            console.log('Error while finding a user images: ', error);
+            console.error('Error while finding a user images: ', error);
             return { images: [], error: error.message };
         }
     },
@@ -91,7 +91,7 @@ imageSchema.statics = {
                 .find({ user, 'details.key': key }, { _id: 1, details: 0, user: 0 });
             return { image: !image ? [] : image, error: null };
         } catch (error) {
-            console.log('Error while finding a user image: ', error);
+            console.error('Error while finding a user image: ', error);
             return { images: [], error: error.message };
         }
     },
@@ -103,7 +103,7 @@ imageSchema.statics = {
             }, { upsert: false, new: true })
 
             if (!imageUpdated) {
-                console.log(`Image for user wasn't updated.`);
+                console.warn(`Image for user wasn't updated.`);
                 return { image: {}, error: 'Image was not updated!' };
             }
             return { image: imageUpdated, error: null };
