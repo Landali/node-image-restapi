@@ -96,7 +96,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon ./src/app.js",
-    "test-format": "jest src/tests/unit/formatters/ --no-cache --colors --watchAll --bail "
+    "test-format": "jest src/tests/unit/formatters/ --no-cache --colors --watchAll --bail ",
+    "test-validator": "jest src/tests/unit/validators/ --no-cache --colors --watchAll --bail "
   },
   "keywords": [],
   "author": "",
