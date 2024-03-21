@@ -10,12 +10,15 @@ const { validateUserImage } = require('../../utils/validators/saveImage');
 const { validDownloadS3Image } = require('../../utils/validators/downloadS3Image');
 const { formatUserImageUrls } = require('../../utils/formatter/userImageUrls');
 const imageDownloader = require('node-image-downloader');
+const { getStorageItem } = require('../../services/serverStore');
+
 const Images = require('../../models/image');
 
 module.exports = {
     async getImages(req, res) {
         console.log('Retrieving images from provider ...');
-
+        const configurations = await getStorageItem('globalConfig');
+        console.log('global configurations', configurations)
         const params = paramsValidator(req.body);
         const images = await searchImage(params);
         return res.status(200).json({ Status: "Success", data: { ...images.data } });
@@ -26,27 +29,20 @@ module.exports = {
 
         const token = req.header('Authorization');
         const decoded = jwtTokenVerify({ token, tokenSecret: JWT_TOKEN_SECRET });
-
+        const configurations = await getStorageItem('globalConfig');
         const validatingImage = {
             key: `${decoded.userId}/${key}`,
             name,
             image,
             type,
-            config: {
-                regex: {
-                    enabled: true,
-                    regex: 'https?:\/\/(\\bimages.unsplash.com\/\\bphoto\\-\\b.{13}\-\\b.{12}\\?\\b.{36}(\\b(jpg|png)))',
-                    notation: 'i'
-                },
-                validImageTypes: ['jpg', 'png']
-            }
+            config: configurations
         }
         const { valid, message } = validS3Image(validatingImage);
         if (!valid) {
             return res.status(400).json({ Status: 'Unsuccess', data: null, message });
         }
         const savedImage = await saveImageS3(`${decoded.userId}/${key}`, image, { name, type, key });
-       
+
         if (!savedImage) {
             return res.status(401).json({
                 Status: 'Unsuccess',
@@ -87,7 +83,7 @@ module.exports = {
             perPage: newPerPage
         });
 
-       return res.status(200).json({ Status: "Success", data: images, error });
+        return res.status(200).json({ Status: "Success", data: images, error });
     },
     async saveUserImage(req, res) {
         console.log('Saving user image ...');
@@ -97,11 +93,11 @@ module.exports = {
 
         const { url } = details;
         const imageurls = formatUserImageUrls(url);
-
+        const configurations = await getStorageItem('globalConfig');
         const { valid, message } = validateUserImage({
             user: decoded.userId,
             details: { ...details, url: imageurls },
-            validTypes: ['jpg', 'png']
+            validTypes: configurations.validImageTypes
         });
         if (!valid) {
             return res.status(400).json({ Status: 'Unsuccess', data: {}, message });
@@ -136,11 +132,11 @@ module.exports = {
 
         const { url } = details;
         const imageurls = formatUserImageUrls(url);
-
+        const configurations = await getStorageItem('globalConfig');
         const { valid, message } = validateUserImage({
             user: decoded.userId,
             details: { ...details, url: imageurls },
-            validTypes: ['jpg', 'png']
+            validTypes: configurations.validImageTypes
         });
         if (!valid) {
             return res.status(400).json({ Status: 'Unsuccess', data: {}, message });
@@ -171,8 +167,9 @@ module.exports = {
 
         const token = req.header('Authorization');
         const decoded = jwtTokenVerify({ token, tokenSecret: JWT_TOKEN_SECRET });
+        const configurations = await getStorageItem('globalConfig');
         const config = {
-            validImageTypes: ['jpg', 'png']
+            validImageTypes: configurations.validImageTypes
         };
         const { valid, message } = validDownloadS3Image({ key, type, config });
 
