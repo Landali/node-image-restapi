@@ -470,3 +470,18 @@ The rest api instructions is described below.
                 "Status": "Unsuccess", 
                 "error": "Could not set global configurations!"
         }
+
+# API Happy Path (Optional to Use)
+`Api happy path to explore how API works: `
+`NOTE: SignIn just has to be done once to access API's that require auth token. Once token has expire the user must signIn again to generate a new token.`
+
+- SignIn: `SignUp -> SignIn`
+- RecoverPassword: `SignUp -> forgotPassword -> resetPassword -> SignIn`
+- GetUnsplashImages: `SignIn -> getImages`
+- SaveImage: `SignIn -> getImages -> saveImage`
+- SaveImageS3: `SignIn -> getImages -> saveS3Image`
+- updateImage: `SignIn -> getUserImages -> updateImage`
+- updateImage: `SignIn -> getUserImages -> updateS3Image`
+- downloadImage: `SignIn -> getImages -> saveImage -> getUserImages -> downloadImage`
+`-- Experimental --`
+- setGlobalConfiguration `SignIn -> setConfiguration`
