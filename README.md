@@ -92,7 +92,7 @@ The rest api instructions is described below.
 
 `Payload:`
         {
-        "user": USER_NAME,
+        "user": USER_NAME || USER_EMAIL,
         "password": PASSWORD,
         "isEmail": false
         }
@@ -106,3 +106,31 @@ The rest api instructions is described below.
                 ]
             }
         }
+
+
+## Forgot Password
+
+`isEmail flag is true user must be email if false user must be username.`
+
+`GET /forgotPassword`
+
+        http://localhost:3001/forgotPassword
+
+### Response if Success
+        "Status": "Success",
+        "Token": <HERE_SHOULD_HAVE_A_JWT_TOKEN>
+
+        {}
+
+`Payload:`
+        {
+        "user": USER_NAME || USER_EMAIL,
+        "isEmail": false
+        }
+
+### Response if Fails
+            {
+                "Status": 'Unsuccessful',
+                "error": 'No match for user.'
+            }
+
