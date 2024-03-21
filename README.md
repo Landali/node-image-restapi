@@ -227,3 +227,51 @@ The rest api instructions is described below.
         "Status": "Success",
         "data": [],
         "error": ERRORS_DETECTED
+
+
+## Save User Images
+
+`For the payload information select any of the get image api object. A refference to the params: `
+`description = alt_description || description`
+`type = jpg || png`
+`key = id. This value should be unique. Make sure to try another image id when trying multiple saves.`
+`name = any you would like to place to the image`
+`url = urls array. Can select it all or just do an {} with the following urls keys and values: regular, full, small, thumb`
+
+`POST /saveUserImage`
+
+        http://localhost:3001/saveUserImage
+
+### Headers
+
+`Authorization`: JWT_TOKEN_SENDED_TO_EMAIL_URL
+
+### Response if Success
+        "Status": "Success",
+        "message": "Image Saved!"
+
+        {}
+
+`Payload:`
+        {
+        "details": {
+            "name": "tiger8",
+            "type": "jpg",
+            "description": "a large tiger laying on top of a dirt field",
+            "key": "c_w9ylBGkdI",
+            "url": {
+                "full": "",
+                "regular": "",
+                "small": "",
+                "thumb": ""
+            }
+        }
+        }
+
+### Response if Fails
+        "Status": "Unsuccess",
+        "data": {
+            "image": [array of same image found for user],
+            "error": null
+        },
+        "message": "Image already exist for user."
