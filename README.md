@@ -327,3 +327,50 @@ The rest api instructions is described below.
             "description": "",
             "url": ""
             }
+
+
+## Save S3 Image
+
+`For the payload information select the corresponding param from the data used on save user image api. For the image param you can use any of the urls saved: regular, thumb, full, small `
+
+
+`POST /saveS3Image`
+
+        http://localhost:3001/saveS3Image
+
+### Headers
+
+`Authorization`: JWT_TOKEN_SENDED_TO_EMAIL_URL
+
+### Response if Success
+        "Status": "Success",
+        "data": IMAGE_URL,
+        "message": {
+            "image": "",
+            "key": "",
+            "type": "",
+            "name": ""
+        }
+
+        {}
+
+`Payload:`
+        {
+            "key": "DqVU8c9woUg",
+            "name": "tiger3",
+            "image": IMAGE_URL,
+            "type": "jpg"
+        }
+
+### Response if Fails
+        {
+            "Status": "Unsuccess",
+            "data": null,
+            "message": {
+                "image": "Invalid image",
+                "key": "Invalid key",
+                "type": "Invalid type",
+                "name": "Invalid image key."
+            }
+        }
+
