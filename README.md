@@ -134,3 +134,32 @@ The rest api instructions is described below.
                 "error": 'No match for user.'
             }
 
+## Reset Password
+
+`isEmail flag is true user must be email if false user must be username.`
+`NOTE: Make sure to use token obtained from forgotPassword email. Should be the long string on the url sended to email.`
+
+`PUT /resetPassword`
+
+        http://localhost:3001/resetPassword
+
+### Headers
+
+`Authorization`: JWT_TOKEN_SENDED_TO_EMAIL_URL
+
+### Response if Success
+        "Status": "Success"
+
+        {}
+
+`Payload:`
+        {
+        "user": USER_NAME || USER_EMAIL,
+        "password": NEW_PASSWORD
+        }
+
+### Response if Fails
+            {
+                "Status": "UnSuccess"
+            }
+
