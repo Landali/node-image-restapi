@@ -10,6 +10,7 @@ This is a Search Image Rest Api with Node JS.
 - Once on the develop branch make sure to have meet the requirements to run the project and then
 run the following command to install dependencies: `npm install`
 - Once dependencies have been installed create a `.env` file in the project root. Env file should have:
+
         PORT=3001
         DB=mongodb
         DB_URI=value to replace #Make sure to specify database on the connection url.
@@ -31,5 +32,6 @@ run the following command to install dependencies: `npm install`
         AWS_SECRET_KEY= value to replace
         AWS_BUCKET_NAME= value to replace
 
+NOTE: Make sure to replace `value to replace` on env file.
 - Before starting project make sure nothing is running on the select `PORT`.
 - Once everything is setup run the following command to start rest api: `npm start`.
