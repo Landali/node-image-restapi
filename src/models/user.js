@@ -40,6 +40,22 @@ userSchema.statics = {
         }
 
     },
+    async signUser({ user, isEmail }) {
+        try {
+            let query = isEmail ? { email: user } : { username: user };
+            const userFound = await User.findOne(query);
+
+            if (userFound) {
+                console.warn(`User found: ${userFound._id}`);
+                return { user: true, error: null, userFound };
+            }
+            return { user: false, error: null, userFound };
+        } catch (error) {
+            console.log('Error while finding a user: ', error);
+            return { user: true, error: error.message, userFound: {} };
+        }
+
+    },
     async createUser({ username, email, password }) {
         try {
             const newUser = await User.create({ username, email, password })
