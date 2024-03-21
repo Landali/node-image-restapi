@@ -1,6 +1,15 @@
 # node-image-restapi
 
 ## Requirements
+- Install node js version `20.11.1`. Can download it from `https://nodejs.org/en/download`.
+NOTE: Incase you have `node version manager (nvm)` you can download the node version using
+`nvm install v20.11.1`. Make sure to run `nvm list` to check if node version `20.11.1` is been used.
+
+- Install nodemon by running `npm install -g nodemon`.
+- Install `postman` or `thunder client visual studio extension` to test api.
+
+- Create `unsplash` developer account to access development api from  `https://unsplash.com/developers`. Once account is created make sure to create a `App` in your account to get the needed keys for the node rest api project.
+- Have an email the you can use to send password reset link on email service.
 
 ## Instructions
 
