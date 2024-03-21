@@ -369,3 +369,35 @@ The rest api instructions is described below.
             }
         }
 
+## Update S3 Image
+
+`For the payload information select the corresponding param from the data used on update user image api.`
+
+
+`PUT /updateS3Image`
+
+        http://localhost:3001/updateS3Image
+
+### Headers
+
+`Authorization`: JWT_TOKEN_SENDED_TO_EMAIL_URL
+
+### Response if Success
+        "Status": "Success",
+        
+        {}
+
+`Payload:`
+        {
+            "key": "DqVU8c9woUg",
+            "type": "jpg",
+            "name": "tiger5"
+        }
+
+### Response if Fails
+        {
+            "Status": "Unsuccess",
+            "data": [],
+            "message": "Image not found."
+        }
+
