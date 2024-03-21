@@ -14,7 +14,7 @@ module.exports = {
 
         if (!validCredentials.isValid) return res.status(401).json({ Status: "Unsucess", error: validCredentials.errors });
 
-        const { user, error, userFound } = await User.findUser(req.body);
+        const { user, error, userFound } = await User.signUser(req.body);
         if (error) return res.status(404).json({ Status: "Error.", error });
         if (!user) return res.status(401).json({ Status: "User does not exist." });
 
@@ -73,17 +73,17 @@ module.exports = {
         const userValid = userForgotPassword(req.body);
         if (!userValid.isValid) return res.status(401).json({ Status: "Unsucess", error: userValid.errors });
 
-        const { user, userFound } = await User.findUser(req.body);
+        const { user, userFound } = await User.signUser(req.body);
         if (!user) {
             console.log('User not found')
             return res.status(401).json({ Status: 'Unsuccessful', error: 'No match for user.' });
         }
-
+        console.log('userFound', userFound)
         const token = jwtForgotPasswordSignIn(userFound._id);
 
         const url = `${req.protocol}://${req.get('host')}/resetPassword`;
 
-        const sended = await sendRecoveryEmail({ email: 'allanpaz93@hotmail.com', token, url });
+        const sended = await sendRecoveryEmail({ email: userFound.email, token, url });
         console.log('Email sended', sended);
         return res.status(200).json({ Status: 'Success', token });
     },
