@@ -439,3 +439,34 @@ The rest api instructions is described below.
         }
 
 
+#Experimental API
+
+## Setup Configuration
+
+`This API is still in development for its total integration. You can access this API by switching to branch: feature/persist-config. NOTE: Only Tested in Windows. Make sure to run this API after SignIn API.`
+
+
+`GET /setupConfig`
+
+        http://localhost:3001/setupConfig
+
+### Headers
+
+`Authorization`: JWT_TOKEN_SENDED_TO_EMAIL_URL
+
+### Response if Success
+        "Status": "Success", 
+        "message": "Configuration Saved!"
+        
+        {}
+
+`Payload:`
+        {
+ 
+        }
+
+### Response if Fails
+        { 
+                "Status": "Unsuccess", 
+                "error": "Could not set global configurations!"
+        }
