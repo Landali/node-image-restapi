@@ -48,7 +48,37 @@ NOTE: Make sure to replace `value to replace` on env file.
 # REST API
 The rest api instructions is described below.
 
+## Sign Up
+
+`Checks if user exist by using username and email.`
+
+`POST /signUp`
+
+        http://localhost:3001/signIn
+
+### Response if Success
+        "message": "Sign Up Successful",
+        "code": 200,
+        "data": {}
+
+        {}
+
+`Payload:`
+        {
+        "username": USER_NAME,
+        "email": EMAIL,
+        "password": PASSWORD,
+        }
+
+### Response if Fails
+            {
+                "Status": "User already exist."
+            }
+
+
 ## Sign In
+
+`isEmail flag is true user must be email if false user must be username.`
 
 `GET /signIn`
 
@@ -63,8 +93,8 @@ The rest api instructions is described below.
 `Payload:`
         {
         "user": USER_NAME,
-        "email": EMAIL,
         "password": PASSWORD,
+        "isEmail": false
         }
 
 ### Response if Fails
