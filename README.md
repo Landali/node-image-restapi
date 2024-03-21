@@ -45,3 +45,34 @@ NOTE: Make sure to replace `value to replace` on env file.
 - Before starting project make sure nothing is running on the select `PORT`.
 - Once everything is setup run the following command to start rest api: `npm start`.
 
+# REST API
+The rest api instructions is described below.
+
+## Sign In
+
+`GET /signIn`
+
+        http://localhost:3001/signIn
+
+### Response if Success
+        Status: "Sucess"
+        Token: <HERE_SHOULD_HAVE_A_JWT_TOKEN>
+
+        {}
+
+`Payload:`
+        {
+        "user": USER_NAME,
+        "email": EMAIL,
+        "password": PASSWORD,
+        }
+
+### Response if Fails
+        {
+            "Status": "Unsucess",
+            "error": {
+                "credentials": [
+                    "Invalid credentials!"
+                ]
+            }
+        }
