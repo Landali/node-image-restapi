@@ -12,16 +12,16 @@ module.exports = {
 
         const validCredentials = userSignIn(req.body);
 
-        if (!validCredentials.isValid) return res.status(401).json({ Status: "Unsucess", error: validCredentials.errors });
+        if (!validCredentials.isValid) return res.status(400).json({ Status: "Unsucess", error: validCredentials.errors });
 
         const { user, error, userFound } = await User.signUser(req.body);
         if (error) return res.status(404).json({ Status: "Error.", error });
-        if (!user) return res.status(401).json({ Status: "User does not exist." });
+        if (!user) return res.status(404).json({ Status: "User does not exist." });
 
         const passwordMatch = await comparePasswords(req.body.password, userFound.password);
 
         if (!passwordMatch) {
-            return res.status(401).json({ error: 'Invalid Credentials' });
+            return res.status(400).json({ error: 'Invalid Credentials' });
         }
 
         const token = jwtSignIn({ id: userFound._id });
@@ -35,12 +35,12 @@ module.exports = {
 
         const userValid = userSignUp(req.body);
 
-        if (!userValid.isValid) return res.status(401).json({ Status: "Unsucess", error: userValid.errors });
+        if (!userValid.isValid) return res.status(400).json({ Status: "Unsucess", error: userValid.errors });
 
 
         const { user, error } = await User.findUser(req.body);
         if (error) return res.status(404).json({ Status: "Error.", error });
-        if (user) return res.status(401).json({ Status: "User already exist." });
+        if (user) return res.status(404).json({ Status: "User already exist." });
 
 
         console.log('User exist? ', user);
@@ -54,29 +54,28 @@ module.exports = {
             user: newUser,
         } = await User.createUser({ ...req.body, password: newPassword });
 
-        if (newUser) {
-            return res.status(200).json({
-                message: 'Sign Up Successful',
-                code: 200,
+        if (!newUser) {
+            return res.status(404).json({
+                message: 'Sign Up Unsuccessful',
                 data: {}
             })
         }
 
-        return res.status(401).json({
+        return res.status(200).json({
             message: 'Sign Up Successful',
-            code: 401,
             data: {}
         })
+
     },
     async forgotPassword(req, res) {
         console.log('Forgot password');
         const userValid = userForgotPassword(req.body);
-        if (!userValid.isValid) return res.status(401).json({ Status: "Unsucess", error: userValid.errors });
+        if (!userValid.isValid) return res.status(400).json({ Status: "Unsucess", error: userValid.errors });
 
         const { user, userFound } = await User.signUser(req.body);
         if (!user) {
             console.log('User not found')
-            return res.status(401).json({ Status: 'Unsuccessful', error: 'No match for user.' });
+            return res.status(404).json({ Status: 'Unsuccessful', error: 'No match for user.' });
         }
         console.log('userFound', userFound)
         const token = jwtForgotPasswordSignIn(userFound._id);
@@ -84,7 +83,6 @@ module.exports = {
         const url = `${req.protocol}://${req.get('host')}/resetPassword`;
 
         const sended = await sendRecoveryEmail({ email: userFound.email, token, url });
-        console.log('Email sended', sended);
         return res.status(200).json({ Status: 'Success', token });
     },
     async resetPassword(req, res) {
@@ -93,7 +91,7 @@ module.exports = {
         const newPassword = await hashPassword(password);
         const updatedUser = User.updateUserPassword({ user, password: newPassword });
         if (!updatedUser) {
-            return res.status(401).json({ Status: 'UnSuccess' });
+            return res.status(404).json({ Status: 'UnSuccess' });
         }
         return res.status(200).json({ Status: 'Success' });
     }
