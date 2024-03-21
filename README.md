@@ -41,6 +41,8 @@ run the following command to install dependencies: `npm install`
         AWS_SECRET_KEY= value to replace
         AWS_BUCKET_NAME= value to replace
 
+        DOWNLOAD_PATH=/Downloads #Specify folder in which s3 image is going to download.
+
 NOTE: Make sure to replace `value to replace` on env file.
 - Before starting project make sure nothing is running on the select `PORT`.
 - Once everything is setup run the following command to start rest api: `npm start`.
